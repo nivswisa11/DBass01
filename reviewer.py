@@ -1,16 +1,13 @@
-from enum import Enum
+import os
+import mysql.connector
 
-# "Day is an Enum with three members, MONDAY, TUESDAY, and WEDNESDAY."
-#
-# The first line of the class definition is the same as the first line of any class definition. The second line is where
-# the magic happens. It's an Enum class, and it has three members
-class Day(Enum):
-    MONDAY = 1
-    TUESDAY = 2
-    WEDNESDAY = 3
+# Create a connection
+cnx = mysql.connector.connect(
+    user='root',
+    password=os.getenv('MYSQL_ROOT_PASSWORD'),
+    host='127.0.0.1',
+    database='sakila'
+)
 
-print(Day.MONDAY)
-
-print(Day.MONDAY.name)
-
-print(Day.MONDAY.value)
+# Create a cursor
+cursor = cnx.cursor()
