@@ -68,11 +68,6 @@ while True:
     tableTwo = cursor.fetchall()
     if not tableTwo:
         continue
-    # cursor.execute(("""SELECT film.film_id
-    #                    FROM film
-    #                    WHERE title=%s
-    # """), (filmName,))
-    #filmId = cursor.fetchall()
     if len(tableTwo) == 1:
         rating = input("Please enter a rating for the film:")
         try:
@@ -85,4 +80,15 @@ while True:
     if len(tableTwo) > 1:
         for x in tableTwo:
             print('Film ID: ' + str(x[0]) + ' Film Name: ' + str(x[1]) + ' Release Year: ' + str(x[2]))
+        choice = input("Insert the ID of the movie you would like to rate:\n")
+        for x in tableTwo:
+            try:
+                if int(choice) == x[0]:
+                    rating = input("Please enter a rating for the film:")
+                    cursor.execute('INSERT INTO rating (film_id,reviewer_id,rating) VALUES (%s,%s,%s)',
+                                   (choice, idInput, rating))
+                    cnx.commit()
+                    break
+            except:
+                break
 
