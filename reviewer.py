@@ -19,9 +19,7 @@ cursor.execute("""
       reviewer_id INT NOT NULL PRIMARY KEY,
       first_name VARCHAR(45),
       last_name VARCHAR(45),
-      CHECK (REGEXP_LIKE(reviewer_id,'^([0-9]+)$')),
-      CHECK (REGEXP_LIKE(first_name,'^([A-Za-z]+( [A-Za-z]+)?)$')),
-      CHECK (REGEXP_LIKE(last_name,'^([A-Za-z]+( [A-Za-z]+)?)$'))
+      CHECK (REGEXP_LIKE(reviewer_id,'^([0-9]+)$'))
     );
 """)
 # Create the table rating if not exists
