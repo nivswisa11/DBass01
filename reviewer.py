@@ -88,11 +88,20 @@ while flag:
                 if int(choice) == x[0]:
                     flag = False
                     while True:
-                        rating = input("Please enter a rating for the film:")
-                        cursor.execute('INSERT INTO rating (film_id,reviewer_id,rating) VALUES (%s,%s,%s)',
-                                       (choice, idInput, rating))
-                        cnx.commit()
-                        break
+                        try:
+                            rating = input("Please enter a rating for the film:")
+                            cursor.execute('INSERT INTO rating (film_id,reviewer_id,rating) VALUES (%s,%s,%s)',
+                                           (choice, idInput, rating))
+                            cnx.commit()
+                            break
+                        except:
+                            continue
             except:
                  break
-
+cursor.execute(("""SELECT film.title, CONCAT(reviewer.first_name, ' ', reviewer.last_name), rating.rating
+                       FROM reviewer, rating, film 
+                       WHERE rating.film_id = film.film_id AND rating.reviewer_id = reviewer.reviewer_id
+    """))
+ratingTable = cursor.fetchall()
+for x in ratingTable:
+    print(str(x[0]) + ' ' + str(x[1]) + ' ' + str(x[2]))
