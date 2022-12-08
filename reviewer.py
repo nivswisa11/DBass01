@@ -59,7 +59,8 @@ if not tableOne:
 else:
     print("Hello " + tableOne.firstName + ' ' + tableOne.lastName)
 cursor.fetchall()
-while True:
+flag = True
+while flag:
     filmName = input("Please enter a film name:")
     cursor.execute(("""SELECT film_id, title, release_year
                        FROM film 
@@ -69,14 +70,15 @@ while True:
     if not tableTwo:
         continue
     if len(tableTwo) == 1:
-        rating = input("Please enter a rating for the film:")
-        try:
-            cursor.execute('INSERT INTO rating (film_id,reviewer_id,rating) VALUES (%s,%s,%s)',
+        while True:
+            rating = input("Please enter a rating for the film:")
+            try:
+                cursor.execute('INSERT INTO rating (film_id,reviewer_id,rating) VALUES (%s,%s,%s)',
                                (tableTwo[0][0], idInput, rating))
-            cnx.commit()
-            break
-        except:
-            continue
+                cnx.commit()
+                break
+            except:
+                continue
     if len(tableTwo) > 1:
         for x in tableTwo:
             print('Film ID: ' + str(x[0]) + ' Film Name: ' + str(x[1]) + ' Release Year: ' + str(x[2]))
@@ -84,11 +86,13 @@ while True:
         for x in tableTwo:
             try:
                 if int(choice) == x[0]:
-                    rating = input("Please enter a rating for the film:")
-                    cursor.execute('INSERT INTO rating (film_id,reviewer_id,rating) VALUES (%s,%s,%s)',
-                                   (choice, idInput, rating))
-                    cnx.commit()
-                    break
+                    flag = False
+                    while True:
+                        rating = input("Please enter a rating for the film:")
+                        cursor.execute('INSERT INTO rating (film_id,reviewer_id,rating) VALUES (%s,%s,%s)',
+                                       (choice, idInput, rating))
+                        cnx.commit()
+                        break
             except:
-                break
+                 break
 
