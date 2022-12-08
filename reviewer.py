@@ -62,7 +62,7 @@ if not tableOne:
 cursor.fetchall()
 flag = True
 while flag:
-    filmName = input("Please enter a film name :")
+    filmName = input("Please enter a film name: ")
     cursor.execute(("""SELECT film_id, title, release_year
                        FROM film 
                        WHERE title=%s
