@@ -13,18 +13,6 @@ cnx = mysql.connector.connect(
 )
 # Create a cursor
 cursor = cnx.cursor()
-# Create the table rating if not exists
-cursor.execute("""
-    CREATE TABLE if not exists rating (
-      film_id smallint,
-      reviewer_id INT,
-      rating DECIMAL(2,1),
-      CHECK (rating>=0 AND rating<=9.9),
-      PRIMARY KEY(film_id,reviewer_id),
-      FOREIGN KEY (film_id) REFERENCES film(film_id) ON UPDATE CASCADE ON DELETE CASCADE,
-      FOREIGN KEY (reviewer_id) REFERENCES reviewer(reviewer_id) ON UPDATE CASCADE ON DELETE CASCADE
-    );
-""")
 # Create the table reviewer if not exists
 cursor.execute("""
     CREATE TABLE if not exists reviewer (
@@ -36,6 +24,19 @@ cursor.execute("""
       CHECK (REGEXP_LIKE(last_name,'^([A-Za-z]+( [A-Za-z]+)?)$'))
     );
 """)
+# Create the table rating if not exists
+cursor.execute("""
+    CREATE TABLE if not exists rating (
+      film_id smallint unsigned,
+      reviewer_id INT,
+      rating DECIMAL(2,1),
+      CHECK (rating >= 0 AND rating <= 9.9),
+      PRIMARY KEY(film_id,reviewer_id),
+      FOREIGN KEY (film_id) REFERENCES film(film_id) ON UPDATE CASCADE ON DELETE CASCADE,
+      FOREIGN KEY (reviewer_id) REFERENCES reviewer(reviewer_id) ON UPDATE CASCADE ON DELETE CASCADE
+    );
+""")
+
 while True:
     idInput = input("Insert your ID please:\n")
     cursor.execute(("""SELECT *
@@ -64,20 +65,21 @@ while True:
                                         FROM film 
                                         WHERE title=%s
     """), (filmName,))
-    tableTwo=cursor.fetchall()
+    tableTwo = cursor.fetchall()
     if not tableTwo:
         continue
     cursor.execute(("""SELECT film.film_id
                                 FROM film 
                                 WHERE title=%s
     """), (filmName,))
-    filmID=cursor.fetchall()
-    if len(tableTwo)==1:
+    filmId = cursor.fetchall()
+    if len(tableTwo) == 1:
         rating = input("Please enter a rating for the film:")
         try:
-            cursor.execute('INSERT INTO rating (film_id,reviewer_id,rating) VALUES (%s, %s,%s)',
-                    (filmID.film_id, idInput, rating))
+            cursor.execute('INSERT INTO rating (film_id,reviewer_id,rating) VALUES (%s,%s,%s)',
+                               (filmId[0][0], idInput, rating))
             cnx.commit()
             break
         except:
             continue
+
