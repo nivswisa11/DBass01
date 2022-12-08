@@ -74,8 +74,8 @@ while flag:
         while True:
             rating = input("Please enter a rating for the film: ")
             cursor.execute(("""SELECT rating.reviewer_id, rating.rating
-                                   FROM rating
-                                   WHERE reviewer_id=%s,rating.film_id=%s
+                               FROM rating
+                               WHERE reviewer_id=%s,rating.film_id=%s
                 """), (idInput, tableTwo[0][0]))
             originalRating = cursor.fetchall()
             if len(originalRating) == 1:
@@ -102,8 +102,8 @@ while flag:
                         try:
                             rating = input("Please enter a rating for the film: ")
                             cursor.execute(("""SELECT rating.reviewer_id, rating.rating
-                                                               FROM rating
-                                                               WHERE reviewer_id=%s,film_id=%s
+                                               FROM rating
+                                               WHERE reviewer_id=%s, film_id=%s
                                             """), (idInput, tableTwo[0][0]))
                             originalRating = cursor.fetchall()
                             if len(originalRating) == 1:
