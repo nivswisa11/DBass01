@@ -55,13 +55,13 @@ while True:
         continue
 
 if not tableOne:
-    print("Hello " + firstName + ' ' + lastName)
+    print("Hello, " + firstName + ' ' + lastName)
 else:
-    print("Hello " + tableOne.firstName + ' ' + tableOne.lastName)
+    print("Hello, " + tableOne.firstName + ' ' + tableOne.lastName)
 cursor.fetchall()
 flag = True
 while flag:
-    filmName = input("Please enter a film name:")
+    filmName = input("Please enter a film name :")
     cursor.execute(("""SELECT film_id, title, release_year
                        FROM film 
                        WHERE title=%s
@@ -71,7 +71,7 @@ while flag:
         continue
     if len(tableTwo) == 1:
         while True:
-            rating = input("Please enter a rating for the film:")
+            rating = input("Please enter a rating for the film: ")
             try:
                 cursor.execute('INSERT INTO rating (film_id,reviewer_id,rating) VALUES (%s,%s,%s)',
                                (tableTwo[0][0], idInput, rating))
@@ -79,6 +79,7 @@ while flag:
                 break
             except:
                 continue
+        break
     if len(tableTwo) > 1:
         for x in tableTwo:
             print('Film ID: ' + str(x[0]) + ' Film Name: ' + str(x[1]) + ' Release Year: ' + str(x[2]))
@@ -89,7 +90,7 @@ while flag:
                     flag = False
                     while True:
                         try:
-                            rating = input("Please enter a rating for the film:")
+                            rating = input("Please enter a rating for the film: ")
                             cursor.execute('INSERT INTO rating (film_id,reviewer_id,rating) VALUES (%s,%s,%s)',
                                            (choice, idInput, rating))
                             cnx.commit()
@@ -104,4 +105,4 @@ cursor.execute(("""SELECT film.title, CONCAT(reviewer.first_name, ' ', reviewer.
     """))
 ratingTable = cursor.fetchall()
 for x in ratingTable:
-    print(str(x[0]) + ' ' + str(x[1]) + ' ' + str(x[2]))
+    print('Film Title: ' + str(x[0]) + ' Reviewer Name: ' + str(x[1]) + ' Rating: ' + str(x[2]))
