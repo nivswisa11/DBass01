@@ -44,6 +44,9 @@ while True:
                     WHERE reviewer_id=%s
     """), (idInput,))
     tableOne=cursor.fetchall()
+    if len(tableOne) == 1:
+        print("Hello, " + tableOne[0][1] + ' ' + tableOne[0][2])
+        break
     firstName = input("Insert your first name please:\n")
     lastName = input("Insert your last name please:\n")
     try:
@@ -56,8 +59,6 @@ while True:
 
 if not tableOne:
     print("Hello, " + firstName + ' ' + lastName)
-else:
-    print("Hello, " + tableOne.firstName + ' ' + tableOne.lastName)
 cursor.fetchall()
 flag = True
 while flag:
@@ -72,13 +73,22 @@ while flag:
     if len(tableTwo) == 1:
         while True:
             rating = input("Please enter a rating for the film: ")
-            try:
-                cursor.execute('INSERT INTO rating (film_id,reviewer_id,rating) VALUES (%s,%s,%s)',
-                               (tableTwo[0][0], idInput, rating))
-                cnx.commit()
-                break
-            except:
-                continue
+            cursor.execute(("""SELECT rating.reviewer_id, rating.rating
+                                   FROM rating
+                                   WHERE reviewer_id=%s,rating.film_id=%s
+                """), (idInput, tableTwo[0][0]))
+            originalRating = cursor.fetchall()
+            if len(originalRating) == 1:
+                cursor.execute('UPDATE rating SET rating = %s WHERE reviewer_id = %s AND film_id = %s',
+                               [rating, idInput, tableTwo[0][0]])
+            else:
+                try:
+                    cursor.execute('INSERT INTO rating (film_id,reviewer_id,rating) VALUES (%s,%s,%s)',
+                                   (tableTwo[0][0], idInput, rating))
+                    cnx.commit()
+                    break
+                except:
+                    continue
         break
     if len(tableTwo) > 1:
         for x in tableTwo:
@@ -91,10 +101,19 @@ while flag:
                     while True:
                         try:
                             rating = input("Please enter a rating for the film: ")
-                            cursor.execute('INSERT INTO rating (film_id,reviewer_id,rating) VALUES (%s,%s,%s)',
-                                           (choice, idInput, rating))
-                            cnx.commit()
-                            break
+                            cursor.execute(("""SELECT rating.reviewer_id, rating.rating
+                                                               FROM rating
+                                                               WHERE reviewer_id=%s,film_id=%s
+                                            """), (idInput, tableTwo[0][0]))
+                            originalRating = cursor.fetchall()
+                            if len(originalRating) == 1:
+                                cursor.execute('UPDATE rating SET rating = %s WHERE reviewer_id = %s AND film_id = %s',
+                                               [rating, idInput, tableTwo[0][0]])
+                            else:
+                                cursor.execute('INSERT INTO rating (film_id,reviewer_id,rating) VALUES (%s,%s,%s)',
+                                               (choice, idInput, rating))
+                                cnx.commit()
+                                break
                         except:
                             continue
             except:
